@@ -4,11 +4,11 @@ export default {
     const videoUrl = url.searchParams.get('url');
 
     if (!videoUrl) {
-      return new Response('Bhai, Google Link kidhar hai? 😅', { status: 400 });
+      return new Response('Bhai, URL missing hai! Kya stream karun? 😂', { status: 400 });
     }
 
     try {
-      // यूजर के Headers (जैसे Range) को Google को भेजना
+      // यूजर की Range रिक्वेस्ट को Google तक पहुँचाना (Seek/Skip के लिए)
       let response = await fetch(videoUrl, {
         headers: {
           'Range': request.headers.get('Range'),
@@ -21,6 +21,7 @@ export default {
       newHeaders.set("Access-Control-Allow-Origin", "*");
       newHeaders.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
       newHeaders.set("Access-Control-Allow-Headers", "Range, Content-Type");
+      newHeaders.set("Content-Disposition", "inline");
 
       return new Response(response.body, {
         status: response.status,
@@ -28,7 +29,7 @@ export default {
         headers: newHeaders
       });
     } catch (e) {
-      return new Response('Error: ' + e.message, { status: 500 });
+      return new Response('Lagg gaye! Error: ' + e.message, { status: 500 });
     }
   }
 };
